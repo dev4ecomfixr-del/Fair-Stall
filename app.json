@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Mela Fest",
+    "slug": "mela-fest",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F8F5EF",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F8F5EF",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "name": "Mela Fest — Bangladesh Trade & Heritage Fair",
+      "shortName": "Mela Fest",
+      "themeColor": "#D95D45",
+      "backgroundColor": "#F8F5EF"
+    }
+  }
+}
