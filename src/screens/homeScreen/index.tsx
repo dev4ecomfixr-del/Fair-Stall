@@ -18,6 +18,14 @@ import { Glyph } from '../../components/presentation/textRN';
 import type { GlyphName } from '../../components/presentation/textRN';
 import { COLORS } from '../../constants/Colors';
 
+const SITE_MAX_WIDTH = 1280;
+
+function getSiteInset(width: number) {
+  if (width >= 1024) return 32;
+  if (width >= 768) return 24;
+  return 18;
+}
+
 function FilterSliders() {
   return (
     <View style={styles.filterSliders} accessibilityElementsHidden>
@@ -403,6 +411,61 @@ function BuntingStrip() {
           style={[styles.buntingFlag, { borderTopColor: color }]}
         />
       ))}
+    </View>
+  );
+}
+
+function MinimalFestivalBackdrop() {
+  return (
+    <View
+      pointerEvents="none"
+      style={styles.minimalBackdrop}
+      accessibilityElementsHidden
+    >
+      <View style={styles.backdropRingTop}>
+        <View style={styles.backdropRingInner} />
+      </View>
+
+      <View style={styles.backdropDotCluster}>
+        {Array.from({ length: 12 }).map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.backdropDot,
+              index % 3 === 0 && styles.backdropDotGold,
+            ]}
+          />
+        ))}
+      </View>
+
+      <View style={styles.backdropArch}>
+        <View style={styles.backdropArchInner} />
+      </View>
+
+      <View style={styles.backdropDiamondRow}>
+        {[COLORS.coral, COLORS.gold, '#4C7165', '#705570'].map(
+          (color, index) => (
+            <View
+              key={`${color}-${index}`}
+              style={[
+                styles.backdropMiniDiamond,
+                {
+                  backgroundColor: color,
+                  transform: [{ rotate: '45deg' }],
+                },
+              ]}
+            />
+          ),
+        )}
+      </View>
+
+      <View style={styles.backdropFlower}>
+        <View style={styles.backdropPetalTop} />
+        <View style={styles.backdropPetalRight} />
+        <View style={styles.backdropPetalBottom} />
+        <View style={styles.backdropPetalLeft} />
+        <View style={styles.backdropFlowerCenter} />
+      </View>
     </View>
   );
 }
@@ -1059,11 +1122,11 @@ function StallLandingPage({
 }) {
   const { width } = useWindowDimensions();
   const isDesktop = width >= 900;
-  const inset = width >= 768 ? 28 : 20;
+  const inset = getSiteInset(width);
   const base = stalls.find((stall) => stall.slug === slug) ?? stalls[0];
   const detail = stallPageDetails[slug];
   const productWidth = isDesktop
-    ? (Math.min(width, 1100) - inset * 2 - 28) / 3
+    ? (Math.min(width, SITE_MAX_WIDTH) - inset * 2 - 28) / 3
     : Math.min(width * 0.72, 270);
 
   const action = (title: string, message: string) => Alert.alert(title, message);
@@ -1412,8 +1475,9 @@ function HomeScreen({
   const [activeZone, setActiveZone] = useState('Mega brands');
   const [activeTab, setActiveTab] = useState('Home');
   const isDesktop = width >= 900;
-  const horizontalInset = width >= 768 ? 28 : 20;
-  const contentWidth = Math.min(width, 1100) - horizontalInset * 2;
+  const horizontalInset = getSiteInset(width);
+  const contentWidth =
+    Math.min(width, SITE_MAX_WIDTH) - horizontalInset * 2;
   const cardWidth = useMemo(
     () =>
       isDesktop
@@ -1430,7 +1494,12 @@ function HomeScreen({
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <StatusBar style="dark" />
-      <View style={styles.appShell}>
+      <LinearGradient
+        colors={['#FBF8F1', '#F7EEE2', '#FAF4EA', '#F4ECE3']}
+        locations={[0, 0.34, 0.7, 1]}
+        style={styles.appShell}
+      >
+        <MinimalFestivalBackdrop />
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
@@ -1986,7 +2055,7 @@ function HomeScreen({
             );
           })}
         </View>}
-      </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -2057,7 +2126,147 @@ const styles = StyleSheet.create({
   },
   appShell: {
     flex: 1,
-    backgroundColor: COLORS.paper,
+    overflow: 'hidden',
+  },
+  minimalBackdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    overflow: 'hidden',
+  },
+  backdropRingTop: {
+    position: 'absolute',
+    right: -105,
+    top: 130,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    borderWidth: 24,
+    borderColor: 'rgba(217,93,69,0.07)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backdropRingInner: {
+    width: 155,
+    height: 155,
+    borderRadius: 78,
+    borderWidth: 1,
+    borderColor: 'rgba(217,93,69,0.14)',
+  },
+  backdropDotCluster: {
+    position: 'absolute',
+    left: 20,
+    top: '36%',
+    width: 74,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    opacity: 0.28,
+  },
+  backdropDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: '#4C7165',
+  },
+  backdropDotGold: {
+    backgroundColor: COLORS.gold,
+  },
+  backdropArch: {
+    position: 'absolute',
+    right: -74,
+    bottom: 110,
+    width: 210,
+    height: 210,
+    borderTopLeftRadius: 106,
+    borderTopRightRadius: 106,
+    borderWidth: 2,
+    borderBottomWidth: 0,
+    borderColor: 'rgba(76,113,101,0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backdropArchInner: {
+    width: 132,
+    height: 132,
+    borderTopLeftRadius: 67,
+    borderTopRightRadius: 67,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: 'rgba(76,113,101,0.14)',
+    marginTop: 52,
+  },
+  backdropDiamondRow: {
+    position: 'absolute',
+    left: 30,
+    bottom: 75,
+    flexDirection: 'row',
+    gap: 15,
+    opacity: 0.18,
+  },
+  backdropMiniDiamond: {
+    width: 9,
+    height: 9,
+    borderRadius: 2,
+  },
+  backdropFlower: {
+    position: 'absolute',
+    right: 42,
+    top: '56%',
+    width: 74,
+    height: 74,
+    opacity: 0.08,
+  },
+  backdropPetalTop: {
+    position: 'absolute',
+    left: 27,
+    top: 0,
+    width: 20,
+    height: 31,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    backgroundColor: '#705570',
+  },
+  backdropPetalRight: {
+    position: 'absolute',
+    right: 0,
+    top: 27,
+    width: 31,
+    height: 20,
+    borderTopRightRadius: 13,
+    borderBottomRightRadius: 13,
+    backgroundColor: '#705570',
+  },
+  backdropPetalBottom: {
+    position: 'absolute',
+    left: 27,
+    bottom: 0,
+    width: 20,
+    height: 31,
+    borderBottomLeftRadius: 13,
+    borderBottomRightRadius: 13,
+    backgroundColor: '#705570',
+  },
+  backdropPetalLeft: {
+    position: 'absolute',
+    left: 0,
+    top: 27,
+    width: 31,
+    height: 20,
+    borderTopLeftRadius: 13,
+    borderBottomLeftRadius: 13,
+    backgroundColor: '#705570',
+  },
+  backdropFlowerCenter: {
+    position: 'absolute',
+    left: 27,
+    top: 27,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.gold,
   },
   stallPage: {
     flex: 1,
@@ -2070,7 +2279,7 @@ const styles = StyleSheet.create({
   },
   stallPageHeaderInner: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     height: 70,
     alignSelf: 'center',
     flexDirection: 'row',
@@ -2118,7 +2327,7 @@ const styles = StyleSheet.create({
   },
   stallHeroWrap: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     paddingTop: 14,
   },
@@ -2218,7 +2427,7 @@ const styles = StyleSheet.create({
   },
   stallStats: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -2250,7 +2459,7 @@ const styles = StyleSheet.create({
   },
   stallStorySection: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     flexDirection: 'row',
     gap: 70,
@@ -2311,7 +2520,7 @@ const styles = StyleSheet.create({
   },
   stallProductsSection: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     paddingTop: 36,
     paddingBottom: 60,
@@ -2383,7 +2592,7 @@ const styles = StyleSheet.create({
   },
   stallOffer: {
     width: 'auto',
-    maxWidth: 1044,
+    maxWidth: 1216,
     alignSelf: 'center',
     minHeight: 120,
     borderRadius: 22,
@@ -2443,7 +2652,7 @@ const styles = StyleSheet.create({
   },
   stallVisitSection: {
     width: 'auto',
-    maxWidth: 1044,
+    maxWidth: 1216,
     alignSelf: 'center',
     minHeight: 410,
     borderRadius: 26,
@@ -2558,7 +2767,7 @@ const styles = StyleSheet.create({
   },
   otherStallsSection: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     paddingBottom: 68,
   },
@@ -2671,7 +2880,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
   },
   logoLockup: {
@@ -2773,7 +2982,7 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     paddingTop: 12,
     marginBottom: 46,
@@ -2991,7 +3200,7 @@ const styles = StyleSheet.create({
   },
   liveTicker: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     minHeight: 58,
     flexDirection: 'row',
@@ -3049,7 +3258,7 @@ const styles = StyleSheet.create({
   },
   section: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     marginBottom: 42,
   },
@@ -3609,7 +3818,7 @@ const styles = StyleSheet.create({
   },
   dealsSection: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     paddingVertical: 30,
     marginBottom: 42,
@@ -4545,7 +4754,7 @@ const styles = StyleSheet.create({
   },
   mapBanner: {
     width: 'auto',
-    maxWidth: 1060,
+    maxWidth: 1216,
     alignSelf: 'center',
     minHeight: 250,
     borderRadius: 26,
@@ -4637,7 +4846,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '100%',
-    maxWidth: 1100,
+    maxWidth: 1280,
     alignSelf: 'center',
     alignItems: 'center',
     paddingTop: 42,
