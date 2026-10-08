@@ -11,7 +11,8 @@
     "react-dom": "19.2.3",
     "react-native": "0.86.2",
     "react-native-safe-area-context": "~5.7.0",
-    "react-native-web": "^0.21.2"
+    "react-native-web": "^0.21.2",
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
@@ -23,7 +24,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "dev": "expo start --web",
+    "build": "expo export --platform web",
     "build:web": "expo export --platform web",
+    "start:prod": "serve dist -s -p $PORT",
     "typecheck": "tsc --noEmit"
   },
   "private": true
