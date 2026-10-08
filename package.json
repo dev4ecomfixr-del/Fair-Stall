@@ -1,7 +1,6 @@
 {
   "name": "mela-fest",
   "version": "1.0.0",
-  "main": "index.ts",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.8",
     "expo": "~57.0.9",
